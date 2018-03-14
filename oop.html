@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>oop</title>
+</head>
+
+<body>
+    <script>
+    /**
+     *类的声明
+     */
+     function Animal(){
+
+     }
+     /*ES6中class的声明*/
+     class Animal2{
+     	constructor(){
+     		this.name='aa'
+     	}
+     }
+     new Animal();
+     new Animal2();
+     //借助构造函数实现继承 部分继承，原型链上的方法不被继承
+     function Parent1(){
+     	this.name='parent1';
+     }
+     Parent1.prototype.say=function(){
+
+     }
+     function Child1(){
+     	Parent1.call(this);
+     	this.type='child1';
+     }
+     // console.log(new Child1);
+     //借助原型链实现继承
+     function Parent2(){
+     	this.name='parent2';
+     	this.play=[1,2,3];
+     }
+     function Child2(){
+     	this.type='child2';
+     }
+     Child2.prototype=new Parent2();
+     console.log(new Child2());
+     var s1=new Child2();
+     var s2=new Child2();
+     s1.play.push(3);
+     console.log(s1.play,s2.play);//2个都push了
+
+     //组合方式 父级构造函数执行了2次
+     function Parent3(){
+     	this.name='parent3';
+     	this.play=[1,2,3];
+     }
+     function Child3(){
+     	Parent3.call(this);
+     	this.type='child3';
+     }
+     Child3.prototype=new Parent3();
+     s3=new Child3();
+     s4=new Child3();
+     s3.play.push(4);
+     console.log(s3.play,s4.play);
+
+     // 组合继承方式优化1
+     function Parent4(){
+     	this.name='parent4';
+     	this.play=[1,2,3];
+     }
+     function Child4(){
+     	Parent4.call(this);
+     	this.type='child4';
+     }
+     Child4.prototype=Parent4.prototype;
+     s5=new Child4();
+     s6=new Child4();
+     s5.play.push(1);
+     console.log(s5,s6)
+     Child4.prototype.constructor===Parent4;//不对 应该是Child4，因为Child4.prototype.construtor的值直接取得是Parent4.prototype.construtor
+     //组合继承优化2 完美
+     function Parent5(){
+     	this.name='parent5';
+     	this.play=[1,2,3];
+     }
+     function Child5(){
+     	Parent5.call(this);
+     	this.type='child5';
+     }
+     var __proto=Object.create(Parent5.prototype);
+     __proto.constructor=Child5;
+     Child5.prototype=__proto;
+     var s7=new Child5();
+     var s8=new Child5();
+     s7.play.push(4);
+    </script>
+</body>
+
+</html>

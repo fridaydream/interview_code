@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>原型链类</title>
+</head>
+<body>
+	<script>
+		var o1={name:'o1'};
+		var o2=new Object({name:'o2'});
+
+		var M= function(name){
+			this.name=name;
+		}
+		var o3=new M('o3');
+		var p={name:'p'};
+		var o4=Object.create(p);
+		//模拟new 的效果
+		var new2=function(func){
+			var o=Object.create(func.prototype); //创建Object
+			var k=func.call(o); //执行func
+			if(typeof k ==='object'){ //判断返回的是不是object
+				return k;
+			}else{
+				return o;
+			}
+		}
+		var o6=new2(M);
+		o6 instanceof M===true
+		o6 instanceof Object===true
+		o6.__proto__.constructor===M
+		M.prototype.walk=function(){
+			console.log('walk');
+		}
+		o6.walk();
+		o3.walk();
+
+	</script>
+</body>
+</html>
