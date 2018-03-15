@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>jsonp</title>
+</head>
+<body>
+	<script>
+		var util={};
+		util.makeJsonpRequest=function(url,onsuccess,onerror,charset){ 
+			var callbackName=getName('tt_player');
+			window[callbackName]=function(){
+				if(onsuccess&&util.isFunction(onsuccess)){
+					onsuccess(arguments[0]);
+				}
+			}
+			var script=util.createScript(url+'&callback='+callbackName,charset);
+			script.onload=script.onreadystatechange=function(){
+				if(!script.readyState||/loaded|complete/.test(script,readyState)){
+					script.onload=script.onreadystatechange=null;
+					//移除该script的DOM对象
+					if(script.parentNode){
+						script.parentNode.removeChild(script);
+					}
+					window[callbackName]=null;
+				}
+			}
+			script.onerror=function(){
+				if(onerror&&util.isFunction(onerror)){
+					onerror();
+				}
+			}
+			document.getElementsByTagName('head')[0].appendChild(script);
+		}
+		util.isFunction=function(type){
+			return Object.prototype.toString.call(type)==="[object Function]";
+		}
+		util.getName=function(prefix){
+			return prefix+Math.random().toString(36).replace(/[^a-z]+/g,'').substr(0,5);
+		}
+		util.createScript=function(url,charset){
+			var script=document.createElement('script');
+			script.setAttribute('type','text/javascript');
+			charset&&script.setAttribute('charset',charset);
+			script.setAttribute('src',url);
+			script.async=true;
+			return script;
+		}
+	</script>
+</body>
+</html>
